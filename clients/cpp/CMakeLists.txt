@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+project(hhm_client_cpp LANGUAGES CXX)
+add_library(hhm_client_cpp INTERFACE)
+target_include_directories(hhm_client_cpp INTERFACE include)
+target_compile_features(hhm_client_cpp INTERFACE cxx_std_17)

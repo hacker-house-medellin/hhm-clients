@@ -16,6 +16,7 @@ dir = ".vendor/.zed"
 [dependencies]
 "hacker-house-medellin/hhm-interfaces" = "^0.1.0"
 "hacker-house-medellin/hhm-libs" = "^0.1.0"
+"hacker-house-medellin/hhm-lib" = "^0.1.0"
 
 [publish]
 include_readme = true
@@ -39,7 +40,7 @@ name = "hhm-clients-typescript"
 adapter = "node"
 
 [targets.golang]
-dir = "clients/go"
+dir = "clients/golang"
 adapter = "go"
 
 [targets.python]
@@ -48,9 +49,11 @@ adapter = "python"
 
 [targets.ruby]
 dir = "clients/ruby"
+adapter = "none"
 
 [targets.php]
 dir = "clients/php"
+adapter = "none"
 
 [targets.rust]
 dir = "clients/rust"
@@ -69,9 +72,11 @@ dir = "clients/gleam"
 
 [targets.erlang]
 dir = "clients/erlang"
+adapter = "none"
 
 [targets.elixir]
 dir = "clients/elixir"
+adapter = "none"
 
 [targets.java]
 dir = "clients/java"
@@ -83,3 +88,27 @@ adapter = "java"
 
 [targets.swift]
 dir = "clients/swift"
+
+[targets.gleamlang]
+dir = "clients/gleamlang"
+adapter = "none"
+
+[targets.python3]
+dir = "clients/python3"
+adapter = "none"
+
+[targets.typescript-nodejs]
+dir = "clients/typescript/nodejs"
+adapter = "node"
+
+[targets.typescript-deno]
+dir = "clients/typescript/deno"
+adapter = "none"
+
+[targets.typescript-bun]
+dir = "clients/typescript/bun"
+adapter = "node"
+
+[targets.typescript-edge]
+dir = "clients/typescript/edge"
+adapter = "none"

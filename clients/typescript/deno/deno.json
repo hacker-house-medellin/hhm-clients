@@ -1,0 +1,5 @@
+{
+  "name": "@hacker-house-medellin/hhm-client-deno",
+  "version": "0.1.0",
+  "exports": "./mod.ts"
+}

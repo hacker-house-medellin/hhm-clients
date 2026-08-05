@@ -1,0 +1,7 @@
+name = "hhm_client"
+version = "0.1.0"
+description = "Gleam endpoint helpers for Hacker House Medellín"
+licences = ["MIT"]
+
+[dependencies]
+gleam_stdlib = ">= 0.44.0 and < 2.0.0"

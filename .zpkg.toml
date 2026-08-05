@@ -1,0 +1,19 @@
+[package]
+org = "hacker-house-medellin"
+name = "hhm-clients"
+version = "0.1.0"
+description = "Polyglot SDK clients for Hacker House Medellín"
+license = "MIT"
+language = "polyglot"
+
+[package.repository]
+vcs = "git"
+url = "https://github.com/hacker-house-medellin/hhm-clients"
+
+[publish]
+include_readme = true
+tag_format = "v{version}"
+exclude = [".env", ".env.*", "node_modules/**", "target/**", "dist/**", "*.log"]
+
+[scripts]
+test = "bash scripts/test.sh"

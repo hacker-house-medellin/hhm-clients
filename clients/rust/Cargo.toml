@@ -1,0 +1,9 @@
+[package]
+name = "hhm-client"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Transport-neutral Rust client contracts for Hacker House Medellín"
+
+[lib]
+path = "src/lib.rs"

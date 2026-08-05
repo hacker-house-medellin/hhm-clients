@@ -1,6 +1,9 @@
 {
   "schemaVersion": 1,
   "languages": {
+    "c": {"dir": "clients/c", "sentinel": "CMakeLists.txt"},
+    "cpp": {"dir": "clients/cpp", "sentinel": "CMakeLists.txt"},
+    "zig": {"dir": "clients/zig", "sentinel": "build.zig"},
     "gleamlang": {"dir": "clients/gleam", "sentinel": "gleam.toml"},
     "erlang": {"dir": "clients/erlang", "sentinel": "rebar.config"},
     "elixir": {"dir": "clients/elixir", "sentinel": "mix.exs"},

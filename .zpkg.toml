@@ -4,7 +4,6 @@ name = "hhm-clients"
 version = "0.1.0"
 description = "Polyglot SDK clients for Hacker House Medellín"
 license = "MIT"
-language = "polyglot"
 keywords = ["clients", "sdk", "polyglot", "openapi"]
 
 [package.repository]
@@ -32,33 +31,18 @@ verify-matrix = "node scripts/verify-client-matrix.mjs"
 dir = "."
 name = "hhm-clients-repository"
 
-[targets.typescript]
+# TypeScript is the Node.js Zed target. Deno, Bun, and edge remain explicit
+# runtime entry points inside this package rather than unsupported Zed targets.
+[targets.nodejs]
 dir = "clients/typescript"
 name = "hhm-clients-typescript"
-
-[targets.nodejs]
-dir = "clients/typescript/nodejs"
 adapter = "node"
-
-[targets.deno]
-dir = "clients/typescript/deno"
-
-[targets.bun]
-dir = "clients/typescript/bun"
-adapter = "node"
-
-[targets.edge]
-dir = "clients/typescript/edge"
 
 [targets.golang]
 dir = "clients/go"
 adapter = "go"
 
 [targets.python]
-dir = "clients/python"
-adapter = "python"
-
-[targets.python3]
 dir = "clients/python"
 adapter = "python"
 
@@ -81,9 +65,6 @@ dir = "clients/dart"
 adapter = "dart"
 
 [targets.gleam]
-dir = "clients/gleam"
-
-[targets.gleamlang]
 dir = "clients/gleam"
 
 [targets.erlang]

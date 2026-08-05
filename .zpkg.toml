@@ -32,6 +32,10 @@ verify-matrix = "node scripts/verify-client-matrix.mjs"
 dir = "."
 name = "hhm-clients-repository"
 
+[targets.typescript]
+dir = "clients/typescript"
+name = "hhm-clients-typescript"
+
 [targets.nodejs]
 dir = "clients/typescript/nodejs"
 adapter = "node"
@@ -49,6 +53,10 @@ dir = "clients/typescript/edge"
 [targets.golang]
 dir = "clients/go"
 adapter = "go"
+
+[targets.python]
+dir = "clients/python"
+adapter = "python"
 
 [targets.python3]
 dir = "clients/python"
@@ -71,6 +79,9 @@ adapter = "node"
 [targets.dart]
 dir = "clients/dart"
 adapter = "dart"
+
+[targets.gleam]
+dir = "clients/gleam"
 
 [targets.gleamlang]
 dir = "clients/gleam"

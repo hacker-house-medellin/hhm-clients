@@ -1,0 +1,10 @@
+[package]
+name = "hhm-client-wasm"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Dependency-free WASM ABI helpers for Hacker House Medellín"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+path = "src/lib.rs"

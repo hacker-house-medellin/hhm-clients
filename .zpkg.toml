@@ -26,41 +26,31 @@ exclude = [".env", ".env.*", "node_modules/**", "target/**", "dist/**", "build/*
 [scripts]
 test = "bash scripts/test.sh"
 validate-layout = "bash scripts/validate-client-layout.sh"
+verify-matrix = "node scripts/verify-client-matrix.mjs"
 
 [targets.repository]
 dir = "."
 name = "hhm-clients-repository"
 
-[targets.gleam]
-dir = "clients/gleam"
-
-[targets.erlang]
-dir = "clients/erlang"
-
-[targets.elixir]
-dir = "clients/elixir"
-
-[targets.dart]
-dir = "clients/dart"
-adapter = "dart"
-
-[targets.rust]
-dir = "clients/rust"
-adapter = "rust"
-
-[targets.rust-wasm]
-dir = "clients/wasm"
+[targets.nodejs]
+dir = "clients/typescript/nodejs"
 adapter = "node"
 
-[targets.java]
-dir = "clients/java"
-adapter = "java"
+[targets.deno]
+dir = "clients/typescript/deno"
+
+[targets.bun]
+dir = "clients/typescript/bun"
+adapter = "node"
+
+[targets.edge]
+dir = "clients/typescript/edge"
 
 [targets.golang]
 dir = "clients/go"
 adapter = "go"
 
-[targets.python]
+[targets.python3]
 dir = "clients/python"
 adapter = "python"
 
@@ -70,10 +60,30 @@ dir = "clients/ruby"
 [targets.php]
 dir = "clients/php"
 
-[targets.nodejs]
-dir = "clients/typescript"
+[targets.rust]
+dir = "clients/rust"
+adapter = "rust"
+
+[targets.rust-wasm]
+dir = "clients/wasm"
 adapter = "node"
-name = "hhm-clients-typescript"
+
+[targets.dart]
+dir = "clients/dart"
+adapter = "dart"
+
+[targets.gleamlang]
+dir = "clients/gleam"
+
+[targets.erlang]
+dir = "clients/erlang"
+
+[targets.elixir]
+dir = "clients/elixir"
+
+[targets.java]
+dir = "clients/java"
+adapter = "java"
 
 [targets.kotlin]
 dir = "clients/kotlin"

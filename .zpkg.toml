@@ -15,6 +15,7 @@ dir = ".vendor/.zed"
 
 [dependencies]
 "hacker-house-medellin/hhm-interfaces" = "^0.1.0"
+"hacker-house-medellin/hhm-libs" = "^0.1.0"
 
 [publish]
 include_readme = true
@@ -23,3 +24,61 @@ exclude = [".env", ".env.*", "node_modules/**", "target/**", "dist/**", "*.log",
 
 [scripts]
 test = "bash scripts/test.sh"
+validate-client-matrix = "python3 scripts/validate-client-matrix.py"
+
+[targets.repository]
+dir = "."
+name = "hhm-clients-repository"
+
+[targets.gleam]
+dir = "clients/gleam"
+
+[targets.erlang]
+dir = "clients/erlang"
+
+[targets.elixir]
+dir = "clients/elixir"
+
+[targets.dart]
+dir = "clients/dart"
+adapter = "dart"
+
+[targets.rust]
+dir = "clients/rust"
+adapter = "rust"
+
+[targets.rust-wasm]
+dir = "clients/wasm"
+adapter = "node"
+
+[targets.java]
+dir = "clients/java"
+adapter = "java"
+
+[targets.golang]
+dir = "clients/go"
+adapter = "go"
+
+[targets.python]
+dir = "clients/python"
+adapter = "python"
+
+[targets.ruby]
+dir = "clients/ruby"
+
+[targets.php]
+dir = "clients/php"
+
+[targets.nodejs]
+dir = "clients/typescript/nodejs"
+adapter = "node"
+
+[targets.deno]
+dir = "clients/typescript/deno"
+
+[targets.bun]
+dir = "clients/typescript/bun"
+adapter = "node"
+
+[targets.edge]
+dir = "clients/typescript/edge"

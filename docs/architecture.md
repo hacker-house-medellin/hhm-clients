@@ -19,4 +19,4 @@ The long-name bootstrap repositories are historical aliases, not package sources
 
 Prefer Zed for reusable dependency resolution. A repository retained as a Git submodule must have an explicit editable-workspace, inventory, embedded-source, experiment-reference, or legacy role. Do not represent the same repository as both a Zed dependency and a gitlink in one composition.
 
-A root `.zpkg.toml` allows `zed overtake --git-submodules` to adopt an exact gitlink while preserving `.gitmodules`. Edge code is allowlisted and never a generic proxy.
+`zed overtake --git-submodules` imports each initialized submodule that declares its own `.zpkg.toml` into the root manifest and lockfile while retaining `.gitmodules` as a reversible transport mirror. Edge code is allowlisted and never a generic proxy.

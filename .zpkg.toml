@@ -5,6 +5,7 @@ version = "0.1.0"
 description = "Polyglot SDK clients for Hacker House Medellín"
 license = "MIT"
 language = "polyglot"
+keywords = ["clients", "sdk", "polyglot", "openapi"]
 
 [package.repository]
 vcs = "git"
@@ -15,11 +16,89 @@ dir = ".vendor/.zed"
 
 [dependencies]
 "hacker-house-medellin/hhm-interfaces" = "^0.1.0"
+"hacker-house-medellin/hhm-libs" = "^0.1.0"
 
 [publish]
 include_readme = true
 tag_format = "v{version}"
-exclude = [".env", ".env.*", "node_modules/**", "target/**", "dist/**", "*.log", ".vendor/.zed/**"]
+exclude = [".env", ".env.*", "node_modules/**", "target/**", "dist/**", "build/**", ".build/**", "*.log", ".vendor/.zed/**"]
 
 [scripts]
 test = "bash scripts/test.sh"
+validate-layout = "bash scripts/validate-client-layout.sh"
+verify-matrix = "node scripts/verify-client-matrix.mjs"
+
+[targets.repository]
+dir = "."
+name = "hhm-clients-repository"
+
+[targets.typescript]
+dir = "clients/typescript"
+name = "hhm-clients-typescript"
+
+[targets.nodejs]
+dir = "clients/typescript/nodejs"
+adapter = "node"
+
+[targets.deno]
+dir = "clients/typescript/deno"
+
+[targets.bun]
+dir = "clients/typescript/bun"
+adapter = "node"
+
+[targets.edge]
+dir = "clients/typescript/edge"
+
+[targets.golang]
+dir = "clients/go"
+adapter = "go"
+
+[targets.python]
+dir = "clients/python"
+adapter = "python"
+
+[targets.python3]
+dir = "clients/python"
+adapter = "python"
+
+[targets.ruby]
+dir = "clients/ruby"
+
+[targets.php]
+dir = "clients/php"
+
+[targets.rust]
+dir = "clients/rust"
+adapter = "rust"
+
+[targets.rust-wasm]
+dir = "clients/wasm"
+adapter = "node"
+
+[targets.dart]
+dir = "clients/dart"
+adapter = "dart"
+
+[targets.gleam]
+dir = "clients/gleam"
+
+[targets.gleamlang]
+dir = "clients/gleam"
+
+[targets.erlang]
+dir = "clients/erlang"
+
+[targets.elixir]
+dir = "clients/elixir"
+
+[targets.java]
+dir = "clients/java"
+adapter = "java"
+
+[targets.kotlin]
+dir = "clients/kotlin"
+adapter = "java"
+
+[targets.swift]
+dir = "clients/swift"

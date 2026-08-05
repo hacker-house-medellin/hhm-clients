@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "languages": {
+    "gleamlang": {"dir": "clients/gleam", "sentinel": "gleam.toml"},
+    "erlang": {"dir": "clients/erlang", "sentinel": "rebar.config"},
+    "elixir": {"dir": "clients/elixir", "sentinel": "mix.exs"},
+    "dart": {"dir": "clients/dart", "sentinel": "pubspec.yaml"},
+    "rust": {"dir": "clients/rust", "sentinel": "Cargo.toml"},
+    "java": {"dir": "clients/java", "sentinel": "pom.xml"},
+    "golang": {"dir": "clients/go", "sentinel": "go.mod"},
+    "python3": {"dir": "clients/python3", "sentinel": "pyproject.toml"},
+    "ruby": {"dir": "clients/ruby", "sentinel": "hhm_client.gemspec"},
+    "php": {"dir": "clients/php", "sentinel": "composer.json"},
+    "typescript": {"dir": "clients/typescript", "sentinel": "package.json"},
+    "kotlin": {"dir": "clients/kotlin", "sentinel": "build.gradle.kts"},
+    "swift": {"dir": "clients/swift", "sentinel": "Package.swift"}
+  },
+  "typescriptRuntimes": {
+    "nodejs": "clients/typescript/node/index.js",
+    "deno": "clients/typescript/deno/mod.js",
+    "bun": "clients/typescript/bun/index.js",
+    "edge": "clients/typescript/edge/index.js"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@hacker-house-medellin/hhm-client",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {"types": "./src/index.d.ts", "default": "./src/index.js"},
+    "./node": {"types": "./node/index.d.ts", "default": "./node/index.js"},
+    "./deno": {"types": "./deno/mod.d.ts", "default": "./deno/mod.js"},
+    "./bun": {"types": "./bun/index.d.ts", "default": "./bun/index.js"},
+    "./edge": {"types": "./edge/index.d.ts", "default": "./edge/index.js"}
+  },
+  "files": ["src", "node", "deno", "bun", "edge"]
+}

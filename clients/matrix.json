@@ -6,7 +6,7 @@
     "elixir": {"dir": "clients/elixir", "sentinel": "mix.exs"},
     "dart": {"dir": "clients/dart", "sentinel": "pubspec.yaml"},
     "rust": {"dir": "clients/rust", "sentinel": "Cargo.toml"},
-    "rust-wasm": {"dir": "clients/wasm", "sentinel": "package.json"},
+    "rust-wasm": {"dir": "clients/wasm", "sentinel": "Cargo.toml"},
     "java": {"dir": "clients/java", "sentinel": "pom.xml"},
     "golang": {"dir": "clients/go", "sentinel": "go.mod"},
     "python3": {"dir": "clients/python", "sentinel": "pyproject.toml"},

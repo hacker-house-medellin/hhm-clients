@@ -1,24 +1,33 @@
 {
-  "name": "@hacker-house-medellin/hhm-client",
-  "version": "0.1.0",
   "description": "TypeScript client for Hacker House Medellín",
-  "type": "module",
-  "sideEffects": false,
-  "files": [
-    "dist"
-  ],
+  "engines": {
+    "node": ">=18"
+  },
   "exports": {
     ".": "./dist/src/index.js",
-    "./nodejs": "./dist/nodejs/index.js",
-    "./deno": "./dist/deno/mod.js",
     "./bun": "./dist/bun/index.js",
-    "./edge": "./dist/edge/index.js"
+    "./deno": "./dist/deno/mod.js",
+    "./edge": "./dist/edge/index.js",
+    "./node": {
+      "types": "./node/index.d.ts",
+      "default": "./node/index.js"
+    },
+    "./nodejs": "./dist/nodejs/index.js"
   },
+  "files": [
+    "dist",
+    "src",
+    "node",
+    "deno",
+    "bun",
+    "edge"
+  ],
+  "name": "@hacker-house-medellin/hhm-client",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && node test/smoke.mjs"
   },
-  "engines": {
-    "node": ">=18"
-  }
+  "sideEffects": false,
+  "type": "module",
+  "version": "0.1.0"
 }

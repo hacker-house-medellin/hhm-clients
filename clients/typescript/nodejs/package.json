@@ -1,6 +1,13 @@
 {
+  "engines": {
+    "node": ">=18"
+  },
+  "exports": "./src/index.ts",
+  "files": [
+    "src"
+  ],
   "name": "@hacker-house-medellin/hhm-client-nodejs",
-  "version": "0.1.0",
+  "private": true,
   "type": "module",
-  "exports": "./src/index.ts"
+  "version": "0.1.0"
 }

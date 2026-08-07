@@ -1,6 +1,7 @@
 {
   "autoload": {
     "psr-4": {
+      "HackerHouseMedellin\\": "src/",
       "HackerHouseMedellin\\Client\\": "src/",
       "HackerHouseMedellin\\HhmClient\\": "src/"
     }

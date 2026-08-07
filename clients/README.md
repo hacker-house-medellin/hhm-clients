@@ -10,3 +10,10 @@ Every SDK exposes `health`, `ready`, `config`, `emitEvent`, `createLead`, `creat
 The TypeScript SDK has explicit Node.js, Deno, Bun, and edge-runtime entry points. Kotlin and Swift are first-class because applications for residents, visitors, hosts, events, and community operations are mobile-facing.
 
 `matrix.json` is the machine-readable source of truth and is validated in CI.
+# Hacker House Medellín client matrix
+
+This Zed package depends on `hacker-house-medellin/hhm-interfaces` and `hacker-house-medellin/hhm-libs` and exposes isolated
+targets for Gleam, Erlang, Elixir, Dart, Rust, Java, Go, Python 3, Ruby, PHP, and
+TypeScript for Node.js, Deno, Bun, and edge runtimes. Kotlin and Swift are not advertised until this family has a mobile surface.
+
+Run `python3 scripts/validate-client-matrix.py` before publishing.

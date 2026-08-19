@@ -30,7 +30,6 @@ verify-matrix = "node scripts/verify-client-matrix.mjs"
 
 [targets.repository]
 dir = "."
-name = "hhm-clients-repository"
 
 [targets.c]
 dir = "clients/c"
@@ -53,11 +52,11 @@ adapter = "node"
 
 [targets.golang]
 dir = "clients/golang"
-adapter = "go"
+adapter = "none"
 
 [targets.python]
 dir = "clients/python"
-adapter = "python"
+adapter = "none"
 
 [targets.ruby]
 dir = "clients/ruby"
@@ -69,7 +68,7 @@ adapter = "none"
 
 [targets.rust]
 dir = "clients/rust"
-adapter = "rust"
+adapter = "none"
 
 [targets.rust-wasm]
 dir = "clients/wasm"
@@ -77,10 +76,11 @@ adapter = "node"
 
 [targets.dart]
 dir = "clients/dart"
-adapter = "dart"
+adapter = "none"
 
 [targets.gleam]
 dir = "clients/gleam"
+adapter = "none"
 
 [targets.erlang]
 dir = "clients/erlang"
@@ -100,27 +100,4 @@ adapter = "java"
 
 [targets.swift]
 dir = "clients/swift"
-
-[targets.gleamlang]
-dir = "clients/gleamlang"
-adapter = "none"
-
-[targets.python3]
-dir = "clients/python3"
-adapter = "none"
-
-[targets.typescript-nodejs]
-dir = "clients/typescript/nodejs"
-adapter = "node"
-
-[targets.typescript-deno]
-dir = "clients/typescript/deno"
-adapter = "none"
-
-[targets.typescript-bun]
-dir = "clients/typescript/bun"
-adapter = "node"
-
-[targets.typescript-edge]
-dir = "clients/typescript/edge"
 adapter = "none"

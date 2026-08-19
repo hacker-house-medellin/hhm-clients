@@ -1,0 +1,10 @@
+{
+  "apiSurface": "clients/api-surface.json",
+  "apiSurfaceSha256": "70e2f39827fcc67084f1c061066ba0cfcad6025f377faee0b8d076e78d73c217",
+  "coordinate": "hacker-house-medellin/hhm-clients",
+  "runtime": "rust",
+  "schemaId": "https://zpkg.tech/schemas/client-api.schema.json",
+  "schemaVersion": 1,
+  "target": "rust",
+  "zedTarget": "rust"
+}

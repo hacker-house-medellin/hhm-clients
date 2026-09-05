@@ -26,11 +26,21 @@
   "scripts": {
     "test:contract": "python3 ../../contract/bin/check_surface.py --lang typescript",
     "pretest": "python3 ../../contract/bin/check_surface.py --lang typescript",
-    "prepublishOnly": "python3 ../../contract/bin/check_surface.py --prepublish --lang typescript",
+    "prepublishOnly": "npm run lint:ores && python3 ../../contract/bin/check_surface.py --prepublish --lang typescript",
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node test/smoke.mjs"
+    "test": "npm run build && node test/smoke.mjs",
+    "lint:ores": "if [ -f ../../.ores-lint/lint.sh ]; then sh ../../.ores-lint/lint.sh; else echo 'ores-lint not installed'; fi",
+    "prebuild": "npm run lint:ores"
   },
   "sideEffects": false,
   "type": "module",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "oresLint": {
+    "note": "Declared, not installed. ores-lint resolves these from a global install - see .ores-lint/README.md",
+    "requires": {
+      "eslint": ">=9",
+      "typescript-eslint": ">=8 (optional; without it .ts files are skipped)"
+    },
+    "install": "npm i -g eslint typescript-eslint"
+  }
 }

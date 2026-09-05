@@ -14,6 +14,7 @@ required=(
   clients/rust/Cargo.toml
   clients/wasm/Cargo.toml
   clients/java/pom.xml
+  clients/golang/go.mod
   clients/go/go.mod
   clients/python/pyproject.toml
   clients/ruby/hhm_client.gemspec

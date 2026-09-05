@@ -1,6 +1,6 @@
 {
   "apiSurface": "clients/api-surface.json",
-  "apiSurfaceSha256": "70e2f39827fcc67084f1c061066ba0cfcad6025f377faee0b8d076e78d73c217",
+  "apiSurfaceSha256": "4dff321ab966240c61b840dd2c1f289913099cb0f43ffb4bfc10d26e8084e78a",
   "coordinate": "hacker-house-medellin/hhm-clients",
   "runtime": "php",
   "schemaId": "https://zpkg.tech/schemas/client-api.schema.json",

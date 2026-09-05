@@ -5,6 +5,6 @@
   "runtime": "python3",
   "schemaId": "https://zpkg.tech/schemas/client-api.schema.json",
   "schemaVersion": 1,
-  "target": "python3",
-  "zedTarget": "python"
+  "target": "extension-python3",
+  "zedTarget": "extension-python3"
 }

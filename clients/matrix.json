@@ -25,7 +25,7 @@
       "sentinel": "gleam.toml"
     },
     "golang": {
-      "dir": "clients/go",
+      "dir": "clients/golang",
       "sentinel": "go.mod"
     },
     "java": {

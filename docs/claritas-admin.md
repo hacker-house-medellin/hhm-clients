@@ -51,8 +51,8 @@ This source slice is not a deployed dashboard or a complete mobile tracking syst
 ## Verification and release gates
 
 `tests/claritas-source.json` admits core PR #3 commit
-`b0082e5ee2598c54a013f217cff8bac7e0ce5765` using Git-blob SHA-1 and SHA-256 for its
-original entry point, renderer and package metadata. The harness compiles those
+`32a40bbe302c7596d778b686530338595af8653d` using Git-blob SHA-1 and SHA-256 for its
+original entry point, geometry helper, cohort renderer and package metadata. The harness compiles those
 unchanged sources with TypeScript 5.8.3, builds the private integration using its
 committed tsconfig, and exercises its actual package export map. Upstream private
 source is never committed to this repository. Missing/changed/symlinked source,

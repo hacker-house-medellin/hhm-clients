@@ -10,9 +10,9 @@ const lock = JSON.parse(readFileSync(join(repo, "tests/claritas-source.json"), "
 const source = process.env.CLARITAS_SOURCE_ROOT;
 if (!source) throw new Error("CLARITAS_SOURCE_ROOT is required; no network or test substitute is allowed");
 if (lock.repository !== "claritas-viz/claritas-pub-lib-core" || !/^[a-f0-9]{40}$/.test(lock.commit) ||
-    lock.compiler !== "5.8.3" || lock.files.length !== 3) throw new Error("invalid Claritas source admission");
+    lock.compiler !== "5.8.3" || lock.files.length !== 4) throw new Error("invalid Claritas source admission");
 const root = realpathSync(source);
-const destinations = new Set(["src/index.ts", "src/visualization.ts", "package.json"]);
+const destinations = new Set(["src/index.ts", "src/visualization.ts", "src/cohort-visualization.ts", "package.json"]);
 const verified = lock.files.map(file => {
   if (!destinations.delete(file.destination) || isAbsolute(file.path) || file.path.includes("\\") ||
       file.path.split("/").some(part => !part || part === "." || part === "..")) throw new Error("invalid source path");
@@ -44,7 +44,7 @@ try {
     "--strict", "--declaration", "--module", "NodeNext", "--target", "ES2022", "--lib", "ES2022",
     "--rootDir", sourcePath, "--outDir", outputPath, ...files,
   ], { cwd: workspace, stdio: "inherit" });
-  compile(join(pkg, "src"), join(pkg, "dist"), [join(pkg, "src/index.ts"), join(pkg, "src/visualization.ts")]);
+  compile(join(pkg, "src"), join(pkg, "dist"), [join(pkg, "src/index.ts"), join(pkg, "src/visualization.ts"), join(pkg, "src/cohort-visualization.ts")]);
   const moduleRoot = join(repo, "integrations/claritas");
   const moduleMetadata = readFileSync(join(moduleRoot, "package.json"));
   const modulePackage = JSON.parse(moduleMetadata);

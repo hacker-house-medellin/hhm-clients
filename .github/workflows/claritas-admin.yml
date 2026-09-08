@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: claritas-viz/claritas-pub-lib-core
-          ref: b0082e5ee2598c54a013f217cff8bac7e0ce5765
+          ref: 32a40bbe302c7596d778b686530338595af8653d
           path: .source-candidates/claritas
           token: ${{ secrets.FLEET_GITHUB_READ_TOKEN }}
           persist-credentials: false

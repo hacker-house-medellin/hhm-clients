@@ -1,4 +1,4 @@
-import { createVisualizationSdk, type Observation, type TrendSeries } from "@claritas-viz/claritas-pub-lib-core";
+import { comparisonView, createVisualizationSdk, type Observation, type TrendSeries } from "@claritas-viz/claritas-pub-lib-core";
 
 /** Server-side integration helpers, NOT a new HTTP contract or an auth implementation.
  * Bind the callbacks to a verified request principal. Never send raw rows to a browser.
@@ -53,22 +53,35 @@ const id = (value: unknown): value is string => typeof value === "string" && val
 const integer = (value: unknown): value is number => typeof value === "number" && Number.isSafeInteger(value) && value >= 0 && value <= 1e15;
 const closed = (value: unknown, keys: readonly string[]): boolean => {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
-  const own = Object.keys(value);
-  return own.length === keys.length && own.every(key => keys.includes(key));
+  const own = Reflect.ownKeys(value);
+  return own.length === keys.length && own.every(key => typeof key === "string" && keys.includes(key) &&
+    Object.hasOwn(Object.getOwnPropertyDescriptor(value, key)!, "value"));
 };
 const freezeSeries = (series: TrendSeries): TrendSeries => Object.freeze({
   id: series.id, points: Object.freeze(series.points.map(point => Object.freeze({ ...point }))),
 });
+function identifiers(input: readonly string[]): readonly string[] {
+  if (!Array.isArray(input) || input.length > 2 ||
+      Reflect.ownKeys(input).length !== input.length + 1) return invalid();
+  const result: string[] = [];
+  for (let i = 0; i < input.length; i++) {
+    const field = Object.getOwnPropertyDescriptor(input, String(i));
+    if (!field || !Object.hasOwn(field, "value") || !id(field.value)) return invalid();
+    result.push(field.value);
+  }
+  return Object.freeze(result);
+}
 function snapshot(input: ActivityRequest): ActivityAccess {
   if (!closed(input, ["tenantId", "metric", "mode", "entityIds", "start", "end", "bucketMs"])) invalid();
-  const { tenantId, metric, mode, entityIds, start, end, bucketMs } = input;
+  const { tenantId, metric, mode, start, end, bucketMs } = input;
+  const entityIds = identifiers(input.entityIds);
   if (!id(tenantId) || typeof metric !== "string" || !Object.hasOwn(METRICS, metric) || !["aggregate", "compare"].includes(mode) ||
       !Array.isArray(entityIds) || ![start, end, bucketMs].every(integer) || start >= end || bucketMs < 1 ||
       Math.ceil((end - start) / bucketMs) > 1000) invalid();
   if (mode === "aggregate" ? entityIds.length !== 0 :
       entityIds.length !== 2 || !id(entityIds[0]) || !id(entityIds[1]) || entityIds[0] === entityIds[1]) invalid();
   return Object.freeze({ application: APPLICATION_SCOPE, tenantId, metric, mode,
-    entityIds: Object.freeze([...entityIds]), start, end, bucketMs });
+    entityIds: entityIds, start, end, bucketMs });
 }
 
 /** Calls the actual Claritas package; no algorithm copy, implicit transport or demo fallback.
@@ -128,6 +141,9 @@ export function createActivityVisualization(dependencies: ActivityDependencies) 
         })) : null;
         const charts = Object.freeze(frozen.map((item, index) => viz.trendSvg(item,
           `${metric.label} (${metric.unit}); ${request.mode === "aggregate" ? "observed total" : `${index === 0 ? "left" : "right"}; independent scale`}`)));
+        const pairedView = comparison === null ? null : comparisonView(
+          comparison.map(point => point.at), comparison.map(point => point.left),
+          comparison.map(point => point.right), metric.label, metric.unit);
         // Recheck live access after loading; the host owns atomic revocation/query-budget semantics.
         if (await authorize(request) !== true) throw new ActivityVisualizationError("denied");
         await audit(Object.freeze({ application: APPLICATION_SCOPE, tenantId: request.tenantId, metric: request.metric, mode: request.mode }));
@@ -135,9 +151,9 @@ export function createActivityVisualization(dependencies: ActivityDependencies) 
           start: request.start, end: request.end, bucketMs: request.bucketMs,
           semantics: "observed-entity-bucket-totals" as const,
           scale: request.mode === "compare" ? "independent-use-comparison-table" as const : "single-series" as const,
-          series: frozen, comparison, charts });
+          series: frozen, comparison, charts, pairedView });
       } catch (error) {
-        if (error instanceof ActivityVisualizationError) throw error;
+        if (error instanceof ActivityVisualizationError) throw new ActivityVisualizationError(Object.getOwnPropertyDescriptor(error, "code")?.value ?? "unavailable");
         // Never leak provider errors, private row values, tokens or raw metadata through errors.
         throw new ActivityVisualizationError("unavailable");
       }

@@ -10,9 +10,9 @@ const lock = JSON.parse(readFileSync(join(repo, "tests/claritas-source.json"), "
 const source = process.env.CLARITAS_SOURCE_ROOT;
 if (!source) throw new Error("CLARITAS_SOURCE_ROOT is required; no network or test substitute is allowed");
 if (lock.repository !== "claritas-viz/claritas-pub-lib-core" || !/^[a-f0-9]{40}$/.test(lock.commit) ||
-    lock.compiler !== "5.8.3" || lock.files.length !== 4) throw new Error("invalid Claritas source admission");
+    lock.compiler !== "5.8.3" || lock.files.length !== 5) throw new Error("invalid Claritas source admission");
 const root = realpathSync(source);
-const destinations = new Set(["src/index.ts", "src/visualization.ts", "src/cohort-visualization.ts", "package.json"]);
+const destinations = new Set(["src/index.ts", "src/visualization.ts", "src/cohort-visualization.ts", "src/paired-series.ts", "package.json"]);
 const verified = lock.files.map(file => {
   if (!destinations.delete(file.destination) || isAbsolute(file.path) || file.path.includes("\\") ||
       file.path.split("/").some(part => !part || part === "." || part === "..")) throw new Error("invalid source path");
@@ -44,7 +44,7 @@ try {
     "--strict", "--declaration", "--module", "NodeNext", "--target", "ES2022", "--lib", "ES2022",
     "--rootDir", sourcePath, "--outDir", outputPath, ...files,
   ], { cwd: workspace, stdio: "inherit" });
-  compile(join(pkg, "src"), join(pkg, "dist"), [join(pkg, "src/index.ts"), join(pkg, "src/visualization.ts"), join(pkg, "src/cohort-visualization.ts")]);
+  compile(join(pkg, "src"), join(pkg, "dist"), [join(pkg, "src/index.ts"), join(pkg, "src/visualization.ts"), join(pkg, "src/cohort-visualization.ts"), join(pkg, "src/paired-series.ts")]);
   const moduleRoot = join(repo, "integrations/claritas");
   const moduleMetadata = readFileSync(join(moduleRoot, "package.json"));
   const modulePackage = JSON.parse(moduleMetadata);
@@ -59,9 +59,12 @@ try {
   writeFileSync(join(integration, "package.json"), moduleMetadata);
   writeFileSync(join(integration, "tsconfig.json"), readFileSync(join(moduleRoot, "tsconfig.json")));
   writeFileSync(join(integration, "src/index.ts"), readFileSync(join(moduleRoot, "src/index.ts")));
-  writeFileSync(join(workspace, "test/claritas-admin.test.mjs"), readFileSync(join(repo, "conformance/claritas-admin.cases.mjs")));
+  const tests = ["claritas-admin", "claritas-interop"];
+  for (const name of tests) writeFileSync(join(workspace, `test/${name}.test.mjs`), readFileSync(join(repo, `conformance/${name}.cases.mjs`)));
+  // Keep the original fixture path explicit for source-layout conformance.
+  if (!lstatSync(join(repo, "conformance/claritas-admin.cases.mjs")).isFile()) throw new Error("missing original conformance cases");
   execFileSync(compiler, ["-p", join(integration, "tsconfig.json")], { cwd: workspace, stdio: "inherit" });
-  execFileSync(process.execPath, ["--test", join(workspace, "test/claritas-admin.test.mjs")], { cwd: workspace, stdio: "inherit" });
+  execFileSync(process.execPath, ["--test", ...tests.map(name => join(workspace, `test/${name}.test.mjs`))], { cwd: workspace, stdio: "inherit" });
   console.log(`Verified exact Claritas source ${lock.commit}; this is not frozen-package or production certification.`);
 } finally {
   rmSync(workspace, { recursive: true, force: true });

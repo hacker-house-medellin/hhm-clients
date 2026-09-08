@@ -1,0 +1,57 @@
+import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
+import { readFileSync, writeFileSync, lstatSync, realpathSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { dirname, join, resolve, isAbsolute } from "node:path";
+import { tmpdir } from "node:os";
+import { fileURLToPath } from "node:url";
+
+const repo = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const lock = JSON.parse(readFileSync(join(repo, "tests/claritas-source.json"), "utf8"));
+const source = process.env.CLARITAS_SOURCE_ROOT;
+if (!source) throw new Error("CLARITAS_SOURCE_ROOT is required; no network or test substitute is allowed");
+if (lock.repository !== "claritas-viz/claritas-pub-lib-core" || !/^[a-f0-9]{40}$/.test(lock.commit) ||
+    lock.compiler !== "5.8.3" || lock.files.length !== 3) throw new Error("invalid Claritas source admission");
+const root = realpathSync(source);
+const destinations = new Set(["src/index.ts", "src/visualization.ts", "package.json"]);
+const verified = lock.files.map(file => {
+  if (!destinations.delete(file.destination) || isAbsolute(file.path) || file.path.includes("\\") ||
+      file.path.split("/").some(part => !part || part === "." || part === "..")) throw new Error("invalid source path");
+  let current = root;
+  for (const part of file.path.split("/")) {
+    current = join(current, part);
+    if (lstatSync(current).isSymbolicLink()) throw new Error("symlink source rejected");
+  }
+  const stat = lstatSync(current);
+  if (!stat.isFile() || stat.size > 262144) throw new Error("invalid source file");
+  const bytes = readFileSync(current);
+  const gitBlob = createHash("sha1").update(`blob ${bytes.length}\0`).update(bytes).digest("hex");
+  const sha256 = createHash("sha256").update(bytes).digest("hex");
+  if (gitBlob !== file.gitBlob || sha256 !== file.sha256) throw new Error("Claritas source integrity mismatch");
+  return { destination: file.destination, bytes };
+});
+const compiler = process.env.TSC_BIN || "tsc";
+if (execFileSync(compiler, ["--version"], { encoding: "utf8" }).trim() !== "Version 5.8.3") throw new Error("TypeScript 5.8.3 required");
+const workspace = mkdtempSync(join(tmpdir(), "claritas-housing-test-"));
+try {
+  const pkg = join(workspace, "node_modules/@claritas-viz/claritas-pub-lib-core");
+  for (const file of verified) {
+    const path = join(pkg, file.destination);
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, file.bytes);
+  }
+  writeFileSync(join(workspace, "package.json"), '{"type":"module"}\n');
+  const compile = (sourcePath, outputPath, files) => execFileSync(compiler, [
+    "--strict", "--declaration", "--module", "NodeNext", "--target", "ES2022", "--lib", "ES2022",
+    "--rootDir", sourcePath, "--outDir", outputPath, ...files,
+  ], { cwd: workspace, stdio: "inherit" });
+  compile(join(pkg, "src"), join(pkg, "dist"), [join(pkg, "src/index.ts"), join(pkg, "src/visualization.ts")]);
+  mkdirSync(join(workspace, "src"));
+  mkdirSync(join(workspace, "test"));
+  writeFileSync(join(workspace, "src/claritas-admin.ts"), readFileSync(join(repo, "clients/typescript/src/claritas-admin.ts")));
+  writeFileSync(join(workspace, "test/claritas-admin.test.mjs"), readFileSync(join(repo, "tests/claritas-admin.test.mjs")));
+  compile(join(workspace, "src"), join(workspace, "build"), [join(workspace, "src/claritas-admin.ts")]);
+  execFileSync(process.execPath, ["--test", join(workspace, "test/claritas-admin.test.mjs")], { cwd: workspace, stdio: "inherit" });
+  console.log(`Verified exact Claritas source ${lock.commit}; this is not frozen-package or production certification.`);
+} finally {
+  rmSync(workspace, { recursive: true, force: true });
+}

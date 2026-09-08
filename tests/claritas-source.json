@@ -1,0 +1,26 @@
+{
+  "repository": "claritas-viz/claritas-pub-lib-core",
+  "commit": "b0082e5ee2598c54a013f217cff8bac7e0ce5765",
+  "status": "draft-source-candidate-not-registry-release",
+  "compiler": "5.8.3",
+  "files": [
+    {
+      "path": "src/ts/src/index.ts",
+      "gitBlob": "4da6303abf9b3e80f9503c327e9408b1f3502516",
+      "destination": "src/index.ts",
+      "sha256": "99f326f754527a92305944d2b63d6ce456f115d9d7d761e0e8a1d92e591f3fe3"
+    },
+    {
+      "path": "src/ts/src/visualization.ts",
+      "gitBlob": "240e75c546b456a0aed7acf1d7a759b6c7b4515c",
+      "destination": "src/visualization.ts",
+      "sha256": "60f1296c9ebe275c57b7c099c96b43f12eb6a783b1ad47aaa3c4e24e5bfe90fe"
+    },
+    {
+      "path": "src/ts/package.json",
+      "gitBlob": "d25093c49be7dbd30f57bde86c2904e2b0884551",
+      "destination": "package.json",
+      "sha256": "6b18ba17fbe2a6c37bceed9e33a7e7bfb9f0c2cc2f311e66bd7220addaf5c283"
+    }
+  ]
+}

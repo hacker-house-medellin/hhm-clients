@@ -1,0 +1,13 @@
+schema = 2
+
+[tasks.validate-layout]
+description = "Validate existing client layout"
+run = ["bash scripts/validate-client-layout.sh"]
+
+[tasks.verify-matrix]
+description = "Verify the existing SDK language matrix"
+run = ["node scripts/verify-client-matrix.mjs"]
+
+[tasks.claritas-admin]
+description = "Exercise actual hash-admitted Claritas source; CLARITAS_SOURCE_ROOT and TypeScript 5.8.3 required"
+run = ["node --test tests/claritas-admission.test.mjs", "node scripts/test-claritas-admin.mjs"]

@@ -1,0 +1,39 @@
+name: claritas-admin
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  source-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Require approved cross-repository source access
+        env:
+          SOURCE_READ_TOKEN: ${{ secrets.FLEET_GITHUB_READ_TOKEN }}
+        run: |
+          test -n "$SOURCE_READ_TOKEN" || { echo 'Missing read-only Claritas source access; source integration is blocked, not skipped.' >&2; exit 1; }
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: claritas-viz/claritas-pub-lib-core
+          ref: b0082e5ee2598c54a013f217cff8bac7e0ce5765
+          path: .source-candidates/claritas
+          token: ${{ secrets.FLEET_GITHUB_READ_TOKEN }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: "22"
+      - name: Install exact test compiler without lifecycle scripts
+        run: npm install --prefix "$RUNNER_TEMP/claritas-tsc" --ignore-scripts --no-audit --no-fund typescript@5.8.3
+      - name: Exercise admission failures and actual source integration
+        env:
+          CLARITAS_SOURCE_ROOT: ${{ github.workspace }}/.source-candidates/claritas
+          TSC_BIN: ${{ runner.temp }}/claritas-tsc/node_modules/.bin/tsc
+        run: |
+          node --test tests/claritas-admission.test.mjs
+          node scripts/test-claritas-admin.mjs

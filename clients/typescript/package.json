@@ -5,7 +5,6 @@
   },
   "exports": {
     ".": "./dist/src/index.js",
-    "./admin-viz": "./dist/src/claritas-admin.js",
     "./bun": "./dist/bun/index.js",
     "./deno": "./dist/deno/mod.js",
     "./edge": "./dist/edge/index.js",

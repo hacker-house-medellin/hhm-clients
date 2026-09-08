@@ -45,11 +45,22 @@ try {
     "--rootDir", sourcePath, "--outDir", outputPath, ...files,
   ], { cwd: workspace, stdio: "inherit" });
   compile(join(pkg, "src"), join(pkg, "dist"), [join(pkg, "src/index.ts"), join(pkg, "src/visualization.ts")]);
-  mkdirSync(join(workspace, "src"));
+  const moduleRoot = join(repo, "integrations/claritas");
+  const moduleMetadata = readFileSync(join(moduleRoot, "package.json"));
+  const modulePackage = JSON.parse(moduleMetadata);
+  if (!/^@(hhaus-org|hacker-house-medellin)\/(hhaus|hhm)-admin-viz$/.test(modulePackage.name) || modulePackage.private !== true ||
+      modulePackage.type !== "module" || modulePackage.exports?.["."]?.default !== "./dist/index.js") throw new Error("invalid private integration package");
+  const integration = join(workspace, "node_modules", modulePackage.name);
+  mkdirSync(join(integration, "src"), { recursive: true });
   mkdirSync(join(workspace, "test"));
-  writeFileSync(join(workspace, "src/claritas-admin.ts"), readFileSync(join(repo, "clients/typescript/src/claritas-admin.ts")));
-  writeFileSync(join(workspace, "test/claritas-admin.test.mjs"), readFileSync(join(repo, "tests/claritas-admin.test.mjs")));
-  compile(join(workspace, "src"), join(workspace, "build"), [join(workspace, "src/claritas-admin.ts")]);
+  mkdirSync(join(workspace, "build"));
+  // A test import bridge exercises the real package export map, never a substitute implementation.
+  writeFileSync(join(workspace, "build/claritas-admin.js"), `export * from ${JSON.stringify(modulePackage.name)};\n`);
+  writeFileSync(join(integration, "package.json"), moduleMetadata);
+  writeFileSync(join(integration, "tsconfig.json"), readFileSync(join(moduleRoot, "tsconfig.json")));
+  writeFileSync(join(integration, "src/index.ts"), readFileSync(join(moduleRoot, "src/index.ts")));
+  writeFileSync(join(workspace, "test/claritas-admin.test.mjs"), readFileSync(join(repo, "conformance/claritas-admin.cases.mjs")));
+  execFileSync(compiler, ["-p", join(integration, "tsconfig.json")], { cwd: workspace, stdio: "inherit" });
   execFileSync(process.execPath, ["--test", join(workspace, "test/claritas-admin.test.mjs")], { cwd: workspace, stdio: "inherit" });
   console.log(`Verified exact Claritas source ${lock.commit}; this is not frozen-package or production certification.`);
 } finally {

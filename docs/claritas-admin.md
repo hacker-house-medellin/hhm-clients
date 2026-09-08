@@ -1,88 +1,82 @@
 # Claritas admin activity integration — source candidate
 
-This package exports `createActivityVisualization` at the TypeScript subpath
-`@hacker-house-medellin/hhm-client/admin-viz`. It directly imports the actual
-`@claritas-viz/claritas-pub-lib-core` package; it does not copy Claritas algorithms,
-fetch a CDN, choose a transport, collect telemetry, or manufacture demonstration data.
-Existing client entry points are unchanged. Bind this module only in a trusted
-server integration, with authorization/read/audit callbacks bound to the verified
-request principal. A client-side callback is not a security boundary.
+The private package `@hacker-house-medellin/hhm-admin-viz` lives in
+`integrations/claritas` and exports `createActivityVisualization`. It directly
+imports the real `@claritas-viz/claritas-pub-lib-core` peer. The public client
+package, its exports and its contract receipts remain unchanged. This separation
+keeps server policy hooks and an unpublished dependency out of public SDK builds.
+There is no algorithm copy, CDN, implicit transport, tracking collector or demo data.
 
-## Reports and semantics
+## Semantics and protection
 
-Supported measurements are check-ins (count), consented foreground app activity
-(whole seconds), and recorded community contributions (count). The loader provides
-one authoritative pre-aggregated measurement per entity per bucket, using opaque
-IDs, a single tenant, one metric/unit, and the same half-open UTC millisecond window.
-Duplicate entity/bucket measurements are rejected rather than averaged or counted
-twice. Activity seconds cannot exceed the actual bucket duration. Raw location,
-contact details, messages and arbitrary metadata are not accepted.
+Input is one authoritative measurement per entity/bucket: check-ins (count),
+consented foreground activity (whole seconds), or recorded community contributions
+(count). The same tenant, metric, unit and half-open UTC millisecond window apply
+throughout. Duplicate entity/bucket values, raw metadata, malformed IDs, foreign
+tenants, unrequested comparison entities, and oversized inputs are rejected.
+Limits are 50,000 rows, 1,000 buckets and nonnegative integer measurements at most
+1,000,000,000. Activity seconds cannot exceed the actual final bucket duration.
 
-The aggregate is the **sum of observed, consented entity/bucket measurements**,
-not the entity-balanced average returned by Claritas, nor a claim that every user
-has been observed. Claritas determines missing/suppressed states and renders the
-resulting series. The host sets the release threshold explicitly (minimum five).
-Suppressed cells expose neither totals nor contributing counts. Missing and revoked
-consent are not zero. No small-group breakdown or arbitrary subset aggregate is
-accepted. Comparison requires exactly two distinct, independently authorized IDs;
-it returns both series and the signed right-minus-left delta, null when either
-measurement is missing. Charts have independent scales and say so explicitly;
-use the numeric comparison table, not relative chart heights, for comparison.
+Organization charts show the **sum of observed consented measurements**, not the
+entity-balanced average computed by Claritas or a claim that everyone was observed.
+Claritas determines suppression/missing states and renders actual SVG output. The
+server supplies a release threshold of at least five; suppressed cells disclose
+neither totals nor counts. Missing/revoked consent is not zero. Aggregate requests
+cannot choose arbitrary user subsets. Two-user comparison requires distinct IDs,
+returns right-minus-left deltas only when both values exist, and explicitly labels
+its independent chart scales. Use the numeric table for visual comparisons.
 
-Community reports are descriptive activity records, not social-creditworthiness,
-rankings, eligibility, eviction, pricing or housing-access decisions. No tracking
-collector, automated enforcement, sensitive inference or production database query
-is introduced here.
+Community records are descriptive, not social-creditworthiness scores, rankings,
+eligibility, pricing, eviction or housing-access decisions. No location collection,
+sensitive inference, automated enforcement or production query is introduced.
 
-## Host obligations before production
+## Host obligations
 
-Authorization runs before loading and again before release. Both must return the
-boolean `true`; all other results deny. The request and callback references are
-snapshotted, and output is deeply frozen. Provider exceptions are sanitized. A
-successful-release audit must persist before output is returned. Bind audit to the
-host's request correlation context; the callback receives no raw user IDs or values.
+Bind authorize/read/audit callbacks to a verified request principal on a trusted
+server; browser callbacks do not establish authorization. Authorization must return
+literal true before loading and again before release. Successful-release audit must
+persist before output is returned. Requests, callbacks and results are snapshotted;
+provider errors are sanitized. The host must enforce Shared-Auth tenant/admin and
+individual-view permissions, purpose, current consent/retention, revocation, query
+budgets and protection against overlapping-query differencing. Two authorization
+calls are not an atomic policy transaction or a privacy proof. Partition caches by
+tenant and authorization context; record denied attempts in the host security audit.
 
-The host must implement Shared-Auth tenant/admin/purpose/individual-view checks,
-current consent and retention, revocation semantics, rate limits and overlapping
-query/differencing protection. Two authorization calls are not an atomic policy
-transaction or a privacy proof. Capture denied attempts in the host's security
-audit. The Rust private admin service remains the policy/data boundary; this
-TypeScript source does not implement or replace that service or its ORM.
+The Rust private admin service remains the policy/data boundary. These are in-process
+adapter types, not a new HTTP contract. Any new route needs independent TypeSpec and
+hand-authored JSON Schema authorities in `hhm-interfaces`, parity/admission tests,
+Rust/Dart bindings, actual ORM queries and native/mobile/route/UI end-to-end coverage.
+This source slice is not a deployed dashboard or a complete mobile tracking system.
 
-Types here are in-process adapter types, not a new serialized public contract.
-Any new HTTP route must first add independent TypeSpec and hand-authored JSON Schema
-authorities to hhm-interfaces and pass parity/admission checks. Then add Rust/Dart
-clients, route-level authorization tests, UI accessibility and real mobile consent
-revocation/end-to-end tests. Do not label this source slice a production dashboard.
+## Verification and release gates
 
-## Exact source test and release gate
+`tests/claritas-source.json` admits core PR #3 commit
+`b0082e5ee2598c54a013f217cff8bac7e0ce5765` using Git-blob SHA-1 and SHA-256 for its
+original entry point, renderer and package metadata. The harness compiles those
+unchanged sources with TypeScript 5.8.3, builds the private integration using its
+committed tsconfig, and exercises its actual package export map. Upstream private
+source is never committed to this repository. Missing/changed/symlinked source,
+compiler mismatch or failed tests cause failure rather than skipping or substitution.
 
-Claritas core PR #3 is still draft. `tests/claritas-source.json` admits its exact
-commit b0082e5ee2598c54a013f217cff8bac7e0ce5765 and three original files using both
-Git-blob SHA-1 and SHA-256. The harness compiles the unchanged public source and
-package entry point with TypeScript 5.8.3 in a temporary package workspace, then
-strict-compiles and runs this adapter against it. Missing source, changed bytes,
-symlinks, missing/wrong compiler, compilation failure or test failure are errors,
-not skips. Private upstream source is never committed or vendored in this repository.
+`conformance/claritas-admin.cases.mjs` holds the 45 runtime cases outside uncompiled
+Node test discovery. The mandatory source job builds and runs all cases. Three
+source-admission and three layout regression tests also run without credentials.
 
 ```sh
-# CLARITAS_SOURCE_ROOT must point to an authorized checkout of the admitted core.
-node --test tests/claritas-admission.test.mjs
-CLARITAS_SOURCE_ROOT=/absolute/path/to/claritas-pub-lib-core node scripts/test-claritas-admin.mjs
+node --test tests/claritas-admission.test.mjs tests/claritas-layout.test.mjs
+CLARITAS_SOURCE_ROOT=/absolute/path/to/approved-core-checkout node scripts/test-claritas-admin.mjs
 ```
 
-Hosted CI requires existing `FLEET_GITHUB_READ_TOKEN` to have read-only access to
-that private upstream; credentials are not persisted or passed into tests. The
-workflow fails closed when access is absent. Existing CI gates remain intact.
-The Zed dependency declaration records intended adoption, not a published package
-or resolver-produced lock. Before readiness: reconcile/merge core PR #3, publish
-a reviewed immutable package, resolve the actual `.zpkg.lock`, prove
-`zed install --frozen` and installed export-map resolution, pass exact-head CI and
-independent review, and complete the host wiring above. The host must partition caches by tenant and authorization context. No placeholder lock or
-registry fallback is added. Track upstream delivery in DEN-2308 and housing integration in DEN-1950.
+Hosted source integration requires read-only `FLEET_GITHUB_READ_TOKEN` access to the
+private upstream; missing access fails closed. No secret value is embedded or passed
+to tests. Existing CI gates are preserved. The root Zed dependency and the private
+package peer record intended adoption, not a published package or resolved lock.
+Keep draft until reviewed immutable publication, actual resolver-generated lock and
+`zed install --frozen`, exact-head CI, independent review, and host obligations pass.
+The package export-map test is source-workspace evidence, not registry-install proof.
+Track upstream delivery in DEN-2308.
 
-The existing HHM `.zpkg.lock` contains only `version = 1`; it is not a resolved
-transitive dependency lock and remains unmodified, not falsely certified.
-The unsupported manifest script keys `validate-layout` and `verify-matrix`
-are migrated without dropping their commands to schema-v2 `zed-env.toml`.
-Actual Zed CLI execution and full polyglot/SDK builds remain separate gates.
+HHM integration is also tracked in DEN-1950. Its existing `.zpkg.lock` contains
+only `version = 1` and remains unmodified, not certified. Unsupported manifest
+script keys `validate-layout` and `verify-matrix` moved to schema-v2 `zed-env.toml`
+with both original commands preserved. Full Zed/polyglot execution is a separate gate.

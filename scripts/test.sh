@@ -7,11 +7,27 @@ bash scripts/validate-client-layout.sh
 node --test tests/*.test.mjs
 node --check src/index.mjs
 
+work="$(mktemp -d)"
+trap 'rm -rf "$work"' EXIT
+if command -v cc >/dev/null 2>&1; then
+  cc -std=c11 -Wall -Wextra -Werror -Iclients/c/include -c clients/c/src/client.c -o "$work/hhm-client-c.o"
+else echo 'SKIP c compiler'; fi
+if command -v c++ >/dev/null 2>&1; then
+  printf '#include "hhm/client.hpp"\nint main(){hhm::Client c{"https://example.invalid"}; return c.endpoint("houses").empty();}\n' |
+    c++ -std=c++17 -Wall -Wextra -Werror -Iclients/cpp/include -x c++ - -o "$work/hhm-client-cpp"
+else echo 'SKIP c++ compiler'; fi
+if command -v zig >/dev/null 2>&1; then
+  zig test clients/zig/src/root.zig
+else echo 'SKIP zig'; fi
+
 if command -v cargo >/dev/null 2>&1; then
   cargo test --manifest-path clients/rust/Cargo.toml --all-targets
   cargo test --manifest-path clients/wasm/Cargo.toml --all-targets
 else echo 'SKIP cargo: Rust toolchain unavailable'; fi
-if command -v go >/dev/null 2>&1; then (cd clients/go && go test ./...); else echo 'SKIP go'; fi
+if command -v go >/dev/null 2>&1; then
+  (cd clients/golang && go test ./...)
+  (cd clients/go && go test ./...)
+else echo 'SKIP go'; fi
 if command -v dart >/dev/null 2>&1; then dart analyze clients/dart; else echo 'SKIP dart'; fi
 if command -v gleam >/dev/null 2>&1; then (cd clients/gleam && gleam test); else echo 'SKIP gleam'; fi
 if command -v rebar3 >/dev/null 2>&1; then (cd clients/erlang && rebar3 compile); else echo 'SKIP erlang/rebar3'; fi
@@ -28,8 +44,6 @@ if command -v php >/dev/null 2>&1; then
   php clients/php/tests/client_test.php
 else echo 'SKIP php'; fi
 
-work="$(mktemp -d)"
-trap 'rm -rf "$work"' EXIT
 if command -v javac >/dev/null 2>&1 && command -v java >/dev/null 2>&1; then
   mapfile -t java_sources < <(find clients/java/src -name '*.java' -type f | sort)
   javac -d "$work/java" "${java_sources[@]}"

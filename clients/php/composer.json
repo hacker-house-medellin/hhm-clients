@@ -1,14 +1,16 @@
 {
-  "name": "hacker-house-medellin/hhm-client",
+  "autoload": {
+    "psr-4": {
+      "HackerHouseMedellin\\": "src/",
+      "HackerHouseMedellin\\Client\\": "src/",
+      "HackerHouseMedellin\\HhmClient\\": "src/"
+    }
+  },
   "description": "PHP client for Hacker House Medellín",
-  "type": "library",
   "license": "MIT",
+  "name": "hacker-house-medellin/hhm-client",
   "require": {
     "php": ">=8.1"
   },
-  "autoload": {
-    "psr-4": {
-      "HackerHouseMedellin\\HhmClient\\": "src/"
-    }
-  }
+  "type": "library"
 }

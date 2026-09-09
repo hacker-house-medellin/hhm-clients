@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+project(hhm_client_c LANGUAGES C)
+add_library(hhm_client_c STATIC src/client.c)
+target_include_directories(hhm_client_c PUBLIC include)
+target_compile_features(hhm_client_c PUBLIC c_std_11)

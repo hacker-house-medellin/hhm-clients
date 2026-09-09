@@ -1,0 +1,11 @@
+{
+  "exports": "./src/index.ts",
+  "files": [
+    "src"
+  ],
+  "name": "@hacker-house-medellin/hhm-client-edge",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
+  "version": "0.1.0"
+}

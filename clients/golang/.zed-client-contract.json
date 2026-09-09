@@ -1,0 +1,10 @@
+{
+  "apiSurface": "clients/api-surface.json",
+  "apiSurfaceSha256": "4dff321ab966240c61b840dd2c1f289913099cb0f43ffb4bfc10d26e8084e78a",
+  "coordinate": "hacker-house-medellin/hhm-clients",
+  "runtime": "golang",
+  "schemaId": "https://zpkg.tech/schemas/client-api.schema.json",
+  "schemaVersion": 1,
+  "target": "golang",
+  "zedTarget": "golang"
+}

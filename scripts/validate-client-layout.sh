@@ -4,6 +4,9 @@ root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
 
 required=(
+  clients/c/CMakeLists.txt
+  clients/cpp/CMakeLists.txt
+  clients/zig/build.zig
   clients/gleam/gleam.toml
   clients/erlang/rebar.config
   clients/elixir/mix.exs
@@ -11,6 +14,7 @@ required=(
   clients/rust/Cargo.toml
   clients/wasm/Cargo.toml
   clients/java/pom.xml
+  clients/golang/go.mod
   clients/go/go.mod
   clients/python/pyproject.toml
   clients/ruby/hhm_client.gemspec
@@ -39,7 +43,7 @@ for dep in \
   grep -Fq "$dep" .zpkg.toml || { printf 'missing Zed dependency: %s\n' "$dep" >&2; exit 1; }
 done
 
-targets=(gleam erlang elixir dart rust rust-wasm java golang python ruby php nodejs kotlin swift)
+targets=(c cpp zig gleam erlang elixir dart rust rust-wasm java golang python ruby php nodejs kotlin swift)
 for target in "${targets[@]}"; do
   grep -Fq "[targets.$target]" .zpkg.toml || { printf 'missing Zed target: %s\n' "$target" >&2; exit 1; }
 done

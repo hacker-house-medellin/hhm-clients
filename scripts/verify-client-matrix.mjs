@@ -2,6 +2,9 @@ import { access, readFile } from "node:fs/promises";
 
 const root = new URL("../", import.meta.url);
 const matrix = JSON.parse(await readFile(new URL("clients/matrix.json", root), "utf8"));
+const contractMatrix = JSON.parse(
+  await readFile(new URL("clients/client-contract-matrix.json", root), "utf8"),
+);
 const missing = [];
 
 for (const [language, spec] of Object.entries(matrix.languages)) {
@@ -31,8 +34,11 @@ for (const dependency of ["hacker-house-medellin/hhm-interfaces", "hacker-house-
 
 const canonicalTargets = new Map([
   ["repository", "."],
+  ["c", "clients/c"],
+  ["cpp", "clients/cpp"],
+  ["zig", "clients/zig"],
   ["nodejs", "clients/typescript"],
-  ["golang", "clients/go"],
+  ["golang", "clients/golang"],
   ["python", "clients/python"],
   ["ruby", "clients/ruby"],
   ["php", "clients/php"],
@@ -46,6 +52,14 @@ const canonicalTargets = new Map([
   ["kotlin", "clients/kotlin"],
   ["swift", "clients/swift"],
 ]);
+
+const contractTargets = contractMatrix.targets ?? {};
+for (const [language, spec] of Object.entries(matrix.languages)) {
+  const contractSpec = contractTargets[language];
+  if (contractSpec && contractSpec.dir !== spec.dir) {
+    missing.push(`authority-drift:${language}:${spec.dir}:${contractSpec.dir}`);
+  }
+}
 
 const headers = [...manifest.matchAll(/^\[targets\.([^\]]+)\]\s*$/gm)];
 const declaredTargets = new Set(headers.map((match) => match[1]));

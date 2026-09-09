@@ -8,3 +8,10 @@ coverage/
 !.env.example
 npm-debug.log*
 .DS_Store
+tmp
+temp
+tmp/worktrees
+temp/worktrees
+/clients/java/target/
+/clients/kotlin/.gradle/
+/clients/kotlin/build/

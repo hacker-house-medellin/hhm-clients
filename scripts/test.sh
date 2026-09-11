@@ -24,7 +24,10 @@ if command -v cargo >/dev/null 2>&1; then
   cargo test --manifest-path clients/rust/Cargo.toml --all-targets
   cargo test --manifest-path clients/wasm/Cargo.toml --all-targets
 else echo 'SKIP cargo: Rust toolchain unavailable'; fi
-if command -v go >/dev/null 2>&1; then (cd clients/go && go test ./...); else echo 'SKIP go'; fi
+if command -v go >/dev/null 2>&1; then
+  (cd clients/golang && go test ./...)
+  (cd clients/go && go test ./...)
+else echo 'SKIP go'; fi
 if command -v dart >/dev/null 2>&1; then dart analyze clients/dart; else echo 'SKIP dart'; fi
 if command -v gleam >/dev/null 2>&1; then (cd clients/gleam && gleam test); else echo 'SKIP gleam'; fi
 if command -v rebar3 >/dev/null 2>&1; then (cd clients/erlang && rebar3 compile); else echo 'SKIP erlang/rebar3'; fi

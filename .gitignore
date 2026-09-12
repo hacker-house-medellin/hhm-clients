@@ -20,3 +20,5 @@ temp/worktrees
 tmp/
 temp/
 /clients/java/.gradle/
+__pycache__/
+*.pyc

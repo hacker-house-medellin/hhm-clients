@@ -16,3 +16,6 @@ temp/worktrees
 /clients/kotlin/.gradle/
 /clients/kotlin/build/
 .source-candidates/
+# Sanctioned scratch locations - AGENTS.md requires both, trailing-slash form
+tmp/
+temp/

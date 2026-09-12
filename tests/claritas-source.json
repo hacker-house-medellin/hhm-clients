@@ -1,0 +1,38 @@
+{
+  "repository": "claritas-viz/claritas-pub-lib-core",
+  "commit": "91e9bc24ae90019a9e8238c5035af1513a7cf2cf",
+  "status": "draft-source-candidate-not-registry-release",
+  "compiler": "5.8.3",
+  "files": [
+    {
+      "path": "src/ts/src/index.ts",
+      "gitBlob": "6f70d8ead1fd0d0cb272cb64064a4afa64ca6324",
+      "destination": "src/index.ts",
+      "sha256": "38e737ba770b035f21166e62fb04623ca1f3de98e81ea27bb74b869770c92612"
+    },
+    {
+      "path": "src/ts/src/visualization.ts",
+      "gitBlob": "2c27eead41e571076bab789b6c99d4c080f5d1f1",
+      "destination": "src/visualization.ts",
+      "sha256": "021a496626f3ed81e5b560040026b4b01be80fcd78866fe3b973e13828faff9a"
+    },
+    {
+      "path": "src/ts/src/cohort-visualization.ts",
+      "gitBlob": "240e75c546b456a0aed7acf1d7a759b6c7b4515c",
+      "destination": "src/cohort-visualization.ts",
+      "sha256": "60f1296c9ebe275c57b7c099c96b43f12eb6a783b1ad47aaa3c4e24e5bfe90fe"
+    },
+    {
+      "path": "src/ts/src/paired-series.ts",
+      "gitBlob": "5559868e14898dd92fa5901cccd9431a6a482334",
+      "destination": "src/paired-series.ts",
+      "sha256": "d3c82776d2cc6110d405f401826af15be802937bc749f5a0322b04bd974a6e5d"
+    },
+    {
+      "path": "src/ts/package.json",
+      "gitBlob": "d25093c49be7dbd30f57bde86c2904e2b0884551",
+      "destination": "package.json",
+      "sha256": "6b18ba17fbe2a6c37bceed9e33a7e7bfb9f0c2cc2f311e66bd7220addaf5c283"
+    }
+  ]
+}

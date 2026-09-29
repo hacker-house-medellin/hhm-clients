@@ -63,13 +63,11 @@ const freezeSeries = (series: TrendSeries): TrendSeries => Object.freeze({
 function identifiers(input: readonly string[]): readonly string[] {
   if (!Array.isArray(input) || input.length > 2 ||
       Reflect.ownKeys(input).length !== input.length + 1) return invalid();
-  const result: string[] = [];
-  for (let i = 0; i < input.length; i++) {
-    const field = Object.getOwnPropertyDescriptor(input, String(i));
+  return Object.freeze(Array.from(input, (_value, index) => {
+    const field = Object.getOwnPropertyDescriptor(input, String(index));
     if (!field || !Object.hasOwn(field, "value") || !id(field.value)) return invalid();
-    result.push(field.value);
-  }
-  return Object.freeze(result);
+    return field.value;
+  }));
 }
 function snapshot(input: ActivityRequest): ActivityAccess {
   if (!closed(input, ["tenantId", "metric", "mode", "entityIds", "start", "end", "bucketMs"])) invalid();
@@ -82,6 +80,56 @@ function snapshot(input: ActivityRequest): ActivityAccess {
       entityIds.length !== 2 || !id(entityIds[0]) || !id(entityIds[1]) || entityIds[0] === entityIds[1]) invalid();
   return Object.freeze({ application: APPLICATION_SCOPE, tenantId, metric, mode,
     entityIds: entityIds, start, end, bucketMs });
+}
+
+function normalizeMeasurements(
+  request: ActivityAccess,
+  measurements: readonly ActivityMeasurement[],
+  metric: (typeof METRICS)[ActivityMetric],
+): Readonly<{ rows: Observation[]; totals: Map<number, number> }> {
+  const totals = new Map<number, number>();
+  const seen = new Set<string>();
+  const rows = measurements.flatMap((measurement): Observation[] => {
+    if (!closed(measurement, ["tenantId", "entityId", "metric", "unit", "at", "value", "consented"])) invalid();
+    const { tenantId, entityId, at, value, consented } = measurement;
+    if (tenantId !== request.tenantId || !id(entityId) || measurement.metric !== request.metric ||
+        measurement.unit !== metric.unit || typeof consented !== "boolean" || !integer(at) ||
+        at < request.start || at >= request.end || (at - request.start) % request.bucketMs !== 0 ||
+        !(value === null || (integer(value) && value <= 1e9)) ||
+        (request.metric === "activeSeconds" && value !== null &&
+          value > Math.floor((Math.min(at + request.bucketMs, request.end) - at) / 1000)) ||
+        (request.mode === "compare" && !request.entityIds.includes(entityId))) invalid();
+    const key = `${entityId}:${at}`;
+    if (seen.has(key)) invalid();
+    seen.add(key);
+    if (!consented) return [];
+    if (value !== null) totals.set(at, (totals.get(at) ?? 0) + value);
+    return [{ entityId, cohortId: "organization", at, value }];
+  });
+  return Object.freeze({ rows, totals });
+}
+
+function buildSeries(
+  viz: ReturnType<typeof createVisualizationSdk>,
+  request: ActivityAccess,
+  rows: readonly Observation[],
+  totals: ReadonlyMap<number, number>,
+  minEntities: number,
+): TrendSeries[] {
+  if (request.mode === "compare") {
+    return request.entityIds.map(entity => viz.individualTrend(rows, entity, request));
+  }
+  const cohort = viz.cohortTrends(rows, { ...request, minEntities })[0];
+  const empty = {
+    id: "organization",
+    points: Array.from({ length: Math.ceil((request.end - request.start) / request.bucketMs) }, (_, n) => ({
+      at: request.start + n * request.bucketMs, value: null, entities: null, state: "missing" as const,
+    })),
+  };
+  const source = cohort ?? empty;
+  return [{ ...source, points: source.points.map(point => ({
+    ...point, value: point.state === "observed" ? totals.get(point.at)! : null,
+  })) }];
 }
 
 /** Calls the actual Claritas package; no algorithm copy, implicit transport or demo fallback.
@@ -100,39 +148,9 @@ export function createActivityVisualization(dependencies: ActivityDependencies) 
         if (await authorize(request) !== true) throw new ActivityVisualizationError("denied");
         const measurements = await read(request);
         if (!Array.isArray(measurements) || measurements.length > 50000) invalid();
-        const rows: Observation[] = [];
-        const totals = new Map<number, number>();
-        const seen = new Set<string>();
         const metric = METRICS[request.metric];
-        for (const measurement of measurements) {
-          if (!closed(measurement, ["tenantId", "entityId", "metric", "unit", "at", "value", "consented"])) invalid();
-          const { tenantId, entityId, at, value, consented } = measurement;
-          if (tenantId !== request.tenantId || !id(entityId) || measurement.metric !== request.metric ||
-              measurement.unit !== metric.unit || typeof consented !== "boolean" || !integer(at) ||
-              at < request.start || at >= request.end || (at - request.start) % request.bucketMs !== 0 ||
-              !(value === null || (integer(value) && value <= 1e9)) ||
-              (request.metric === "activeSeconds" && value !== null && value > Math.floor((Math.min(at + request.bucketMs, request.end) - at) / 1000)) ||
-              (request.mode === "compare" && !request.entityIds.includes(entityId))) invalid();
-          const key = `${entityId}:${at}`;
-          if (seen.has(key)) invalid();
-          seen.add(key);
-          if (!consented) continue;
-          rows.push({ entityId, cohortId: "organization", at, value });
-          if (value !== null) totals.set(at, (totals.get(at) ?? 0) + value);
-        }
-        let series: TrendSeries[];
-        if (request.mode === "aggregate") {
-          const cohort = viz.cohortTrends(rows, { ...request, minEntities })[0];
-          // Do not turn absence into a fake zero or reveal contributor IDs.
-          const empty = { id: "organization", points: Array.from({ length: Math.ceil((request.end - request.start) / request.bucketMs) }, (_, n) => ({
-            at: request.start + n * request.bucketMs, value: null, entities: null, state: "missing" as const,
-          })) };
-          series = [{ ...(cohort ?? empty), points: (cohort ?? empty).points.map(point => ({
-            ...point, value: point.state === "observed" ? totals.get(point.at)! : null,
-          })) }];
-        } else {
-          series = request.entityIds.map(entity => viz.individualTrend(rows, entity, request));
-        }
+        const { rows, totals } = normalizeMeasurements(request, measurements, metric);
+        const series = buildSeries(viz, request, rows, totals, minEntities);
         const frozen = Object.freeze(series.map(freezeSeries));
         const comparison = request.mode === "compare" ? Object.freeze(frozen[0].points.map((left, n) => {
           const right = frozen[1].points[n];

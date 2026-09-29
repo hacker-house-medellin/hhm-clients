@@ -280,8 +280,24 @@ def _emit_operations(rmap: RouteMap, w: Writer) -> None:
         _emit_call_fn(rmap, route, w)
 
 
+def _operation_fn_name(rmap: RouteMap, route: Route) -> str:
+    """Return a package-safe Go function name for one operation.
+
+    Go types and functions share the package namespace. A route such as
+    `create_reservation` therefore cannot emit `func CreateReservation`
+    when the wire contract already declares `type CreateReservation`.
+    Preserve the ordinary name when it is free and append `Call` only as
+    many times as needed to avoid a declared contract type.
+    """
+    candidate = naming.pascal(route.key)
+    occupied = {naming.pascal(name) for name in rmap.types}
+    while candidate in occupied:
+        candidate += "Call"
+    return candidate
+
+
 def _emit_call_fn(rmap: RouteMap, route: Route, w: Writer) -> None:
-    fn = naming.pascal(route.key)
+    fn = _operation_fn_name(rmap, route)
     args = ["transport RPCTransport"]
     args += [f"{_param_ident(p)} {type_name(rmap, p.type)}" for p in route.path_params]
     if route.query_params:

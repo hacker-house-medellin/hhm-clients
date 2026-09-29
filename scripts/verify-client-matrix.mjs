@@ -3,7 +3,7 @@ import { access, readFile } from "node:fs/promises";
 const root = new URL("../", import.meta.url);
 const matrix = JSON.parse(await readFile(new URL("clients/matrix.json", root), "utf8"));
 const contractMatrix = JSON.parse(
-  await readFile(new URL("clients/client-contract-matrix.json", root), "utf8"),
+  await readFile(new URL("clients/sdk-matrix.json", root), "utf8"),
 );
 const missing = [];
 

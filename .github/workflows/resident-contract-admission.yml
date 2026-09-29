@@ -8,7 +8,7 @@ permissions:
   contents: read
 jobs:
   admission:
-    uses: hacker-house-medellin/hhm-interfaces/.github/workflows/reusable-resident-contract-admission.yml@ec2ff82ad836ad2fc4cc1da1d0d86b1aafc8e69c
+    uses: hacker-house-medellin/hhm-interfaces/.github/workflows/reusable-resident-contract-admission.yml@7cd5da73ef57128e8da7d89971a280b4d5ccf0e0
     with:
       consumer_repository: ${{ github.repository }}
       consumer_role: hhm-polyglot-clients

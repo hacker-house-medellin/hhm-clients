@@ -285,7 +285,7 @@ func ListReservations(transport RPCTransport) ([]Reservation, error) {
 }
 
 // Create a stay. Responds 201 with the stored record.
-func CreateReservation(transport RPCTransport, bodyValue CreateReservation) (Reservation, error) {
+func CreateReservationCall(transport RPCTransport, bodyValue CreateReservation) (Reservation, error) {
 	var out Reservation
 	path := CreateReservationPath()
 	query := []QueryPair{}

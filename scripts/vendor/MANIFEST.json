@@ -10,7 +10,7 @@
     "vendor/ridl/emit/base.py": "73f09f5ba45420bbbb03419ccd2ef9587fc710b3768b254e91cfa8d1830caab3",
     "vendor/ridl/emit/dart.py": "ff69397c025c2ffbca9a0680085ed39d3bf153985057ff5c590b3bab3134dae4",
     "vendor/ridl/emit/gleam.py": "d7ed2aac99a6e9a2995e5ead9af45aa1b20a9f341c8257bb9514675633db904e",
-    "vendor/ridl/emit/go.py": "bd6d7ac23376fe677d3f70f8524b51407c9c62f5fdb68361aa5ea051b7e8dda5",
+    "vendor/ridl/emit/go.py": "af52ce78b6844d3c3227d5aeb2d72ac8364a2e1888213231d921811d377bf201",
     "vendor/ridl/emit/kotlin.py": "33be73f8ed8ed7b62bbd0d421fee56a2f28b74465e01a600b21d8baa895126a2",
     "vendor/ridl/emit/python.py": "e258506c8fcc1e4b0859ef06b503a811fc310f92c94f3e9dee07d8a987dc7d42",
     "vendor/ridl/emit/rust.py": "22d43f769544a3baf285a67df76f5f4a233ac6533a8389c8bea84997067b1c72",

@@ -1,0 +1,300 @@
+{
+  "$schema": "./surface.schema.json",
+  "$comment": "Declared exported interface for every client under clients/. Validated against surface.schema.json; enforced by contract/bin/check_surface.py in tests, in CI, and at pre-publish time. Edit this file to change the contract \u2014 never to paper over a client that drifted.",
+  "contractVersion": "1.0.0",
+  "product": "hhm",
+  "provenance": {
+    "source": "/sessions/rcw-01hrcgtaar2wmaahcznwfnm3/mnt/codes/hacker-house-medellin/hhm-interfaces/openapi.yaml",
+    "sourceSha256": "c7f6b891104a3c6283a443c56b4d3a1f84f1ce9379a059a23922d62de02ffc02",
+    "sourceKind": "openapi",
+    "canonicalRepo": "hhm-interfaces",
+    "generatedBy": "contract/bin/derive_contract.py --from-openapi",
+    "generatedAt": "2026-08-23"
+  },
+  "conventions": {
+    "clientType": "Client",
+    "errorTypes": [
+      "Error"
+    ],
+    "naming": {
+      "default": "snake_case",
+      "byLanguage": {
+        "c": "snake_case",
+        "cpp": "snake_case",
+        "dart": "camelCase",
+        "elixir": "snake_case",
+        "erlang": "snake_case",
+        "gleam": "snake_case",
+        "gleamlang": "snake_case",
+        "go": "PascalCase",
+        "golang": "PascalCase",
+        "java": "camelCase",
+        "kotlin": "camelCase",
+        "php": "camelCase",
+        "python": "snake_case",
+        "python3": "snake_case",
+        "ruby": "snake_case",
+        "rust": "snake_case",
+        "swift": "camelCase",
+        "typescript": "camelCase",
+        "wasm": "snake_case",
+        "zig": "camelCase"
+      }
+    }
+  },
+  "interfaceSchemas": [
+    {
+      "name": "Event",
+      "vendoredPath": "contract/schemas/event.schema.json",
+      "upstreamRepo": "hhm-interfaces",
+      "upstreamPath": "schemas/event.schema.json",
+      "sha256": "ec6602d00f8efd664ca09fb80954326905e3a57c49c663028f14798f5c01d410"
+    },
+    {
+      "name": "Reservation",
+      "vendoredPath": "contract/schemas/reservation.json",
+      "upstreamRepo": "hhm-interfaces",
+      "upstreamPath": "schemas/reservation.json",
+      "sha256": "e8ec55211e78ab7bf20cc3ebbacbbba5f518a7c7b133be008a796480580e866c"
+    }
+  ],
+  "types": {
+    "Event": {
+      "$ref": "./schemas/event.schema.json"
+    },
+    "Reservation": {
+      "$ref": "./schemas/reservation.json"
+    }
+  },
+  "operations": [
+    {
+      "name": "create_reservation",
+      "http": {
+        "method": "POST",
+        "path": "/api/v1/reservations"
+      },
+      "params": [
+        {
+          "name": "body",
+          "in": "body",
+          "type": "object",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_reservation",
+      "http": {
+        "method": "GET",
+        "path": "/api/v1/reservations/{id}"
+      },
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "health",
+      "http": {
+        "method": "GET",
+        "path": "/healthz"
+      },
+      "params": [],
+      "returns": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_reservations",
+      "http": {
+        "method": "GET",
+        "path": "/api/v1/reservations"
+      },
+      "params": [],
+      "returns": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "websocket",
+      "http": {
+        "method": "GET",
+        "path": "/ws"
+      },
+      "params": [],
+      "returns": {
+        "type": "object"
+      }
+    }
+  ],
+  "languages": {
+    "c": {
+      "tier": "warn",
+      "naming": "snake_case",
+      "enforceArity": false,
+      "exclude": [],
+      "symbolPrefix": "hhm_",
+      "clientType": "hhm_client",
+      "minCoverage": 0.0
+    },
+    "cpp": {
+      "tier": "warn",
+      "naming": "snake_case",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "Client",
+      "minCoverage": 0.0
+    },
+    "dart": {
+      "tier": "warn",
+      "naming": "camelCase",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "HhmClient",
+      "minCoverage": 0.0
+    },
+    "elixir": {
+      "tier": "warn",
+      "naming": "snake_case",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "HhmClient",
+      "minCoverage": 20.0
+    },
+    "erlang": {
+      "tier": "warn",
+      "naming": "snake_case",
+      "enforceArity": false,
+      "exclude": [],
+      "minCoverage": 20.0
+    },
+    "gleam": {
+      "tier": "warn",
+      "naming": "snake_case",
+      "enforceArity": false,
+      "exclude": [],
+      "minCoverage": 20.0
+    },
+    "gleamlang": {
+      "tier": "warn",
+      "naming": "snake_case",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "Client",
+      "minCoverage": 0.0
+    },
+    "go": {
+      "tier": "warn",
+      "naming": "PascalCase",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "Client",
+      "minCoverage": 20.0
+    },
+    "golang": {
+      "tier": "warn",
+      "naming": "PascalCase",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "Client",
+      "minCoverage": 0.0
+    },
+    "java": {
+      "tier": "warn",
+      "naming": "camelCase",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "Client",
+      "minCoverage": 20.0
+    },
+    "kotlin": {
+      "tier": "warn",
+      "naming": "camelCase",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "Client",
+      "minCoverage": 20.0
+    },
+    "php": {
+      "tier": "warn",
+      "naming": "camelCase",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "Client",
+      "minCoverage": 20.0
+    },
+    "python": {
+      "tier": "warn",
+      "naming": "snake_case",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "Client",
+      "minCoverage": 20.0
+    },
+    "python3": {
+      "tier": "gate",
+      "naming": "snake_case",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "Client",
+      "minCoverage": 100.0
+    },
+    "ruby": {
+      "tier": "warn",
+      "naming": "snake_case",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "Client",
+      "minCoverage": 20.0
+    },
+    "rust": {
+      "tier": "warn",
+      "naming": "snake_case",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "Client",
+      "minCoverage": 20.0
+    },
+    "swift": {
+      "tier": "warn",
+      "naming": "camelCase",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "Client",
+      "minCoverage": 20.0
+    },
+    "typescript": {
+      "tier": "warn",
+      "naming": "camelCase",
+      "enforceArity": false,
+      "exclude": [],
+      "clientType": "Client",
+      "minCoverage": 20.0
+    },
+    "wasm": {
+      "tier": "gate",
+      "naming": "snake_case",
+      "enforceArity": false,
+      "exclude": [],
+      "minCoverage": 100.0
+    },
+    "zig": {
+      "tier": "warn",
+      "naming": "camelCase",
+      "enforceArity": false,
+      "exclude": [],
+      "minCoverage": 0.0
+    }
+  },
+  "waivers": []
+}

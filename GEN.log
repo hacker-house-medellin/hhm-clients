@@ -1,0 +1,11 @@
+{
+  "apiSurfaceSha256": "4dff321ab966240c61b840dd2c1f289913099cb0f43ffb4bfc10d26e8084e78a",
+  "changed": [],
+  "errors": [],
+  "minimumTargets": 15,
+  "mode": "write",
+  "prefix": "hhm",
+  "repository": "hacker-house-medellin/hhm-clients",
+  "schemaVersion": 1,
+  "standardTargets": 20
+}

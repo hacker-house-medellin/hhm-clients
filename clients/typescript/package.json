@@ -1,5 +1,5 @@
 {
-  "description": "TypeScript client for Hacker House Medellín",
+  "description": "TypeScript client for Hacker House Medell\u00edn",
   "engines": {
     "node": ">=18"
   },
@@ -24,8 +24,14 @@
   ],
   "name": "@hacker-house-medellin/hhm-client",
   "scripts": {
+    "test:contract": "python3 ../../contract/bin/check_surface.py --lang typescript",
+    "pretest": "python3 ../../contract/bin/check_surface.py --lang typescript",
+    "prepublishOnly": "python3 ../../contract/bin/check_surface.py --prepublish --lang typescript",
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node test/smoke.mjs"
+    "test": "npm run build && node test/smoke.mjs",
+    "test:contract": "python3 ../../contract/bin/check_surface.py --lang typescript",
+    "pretest": "python3 ../../contract/bin/check_surface.py --lang typescript",
+    "prepublishOnly": "python3 ../../contract/bin/check_surface.py --prepublish --lang typescript"
   },
   "sideEffects": false,
   "type": "module",

@@ -20,3 +20,41 @@ test('client throws structured errors', async () => {
   const client = createClient({ baseUrl: 'https://edge.example.test', fetchImpl: async () => new Response(JSON.stringify({ error: 'nope' }), { status: 418 }) });
   await assert.rejects(() => client.health(), ApiError);
 });
+
+test('client rejects ambiguous or credential-bearing endpoint URLs', () => {
+  for (const baseUrl of [
+    undefined,
+    '',
+    'https://user:secret@edge.example.test',
+    'https://edge.example.test/api?tenant=other',
+    'https://edge.example.test/#fragment',
+    'javascript:alert(1)',
+    '//edge.example.test',
+    'not a url',
+  ]) {
+    assert.throws(() => createClient({ baseUrl }), TypeError, String(baseUrl));
+  }
+  const nested = createClient({ baseUrl: 'https://edge.example.test/proxy/' });
+  assert.equal(nested.baseUrl, 'https://edge.example.test/proxy');
+});
+
+test('client preserves non-JSON server errors as typed ApiError bodies', async () => {
+  const client = createClient({
+    baseUrl: 'https://edge.example.test',
+    fetchImpl: async () => new Response('upstream unavailable', { status: 502 }),
+  });
+  await assert.rejects(
+    () => client.health(),
+    (error) => error instanceof ApiError
+      && error.status === 502
+      && error.body === 'upstream unavailable',
+  );
+});
+
+test('client does not silently treat malformed successful JSON as valid', async () => {
+  const client = createClient({
+    baseUrl: 'https://edge.example.test',
+    fetchImpl: async () => new Response('{broken', { status: 200 }),
+  });
+  await assert.rejects(() => client.health(), SyntaxError);
+});

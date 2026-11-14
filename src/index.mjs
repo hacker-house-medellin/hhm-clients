@@ -17,9 +17,19 @@ export class ApiError extends Error {
 
 export class ServiceClient {
   constructor({ baseUrl, token, fetchImpl = globalThis.fetch } = {}) {
-    if (!baseUrl) throw new TypeError('baseUrl is required');
+    if (typeof baseUrl !== 'string' || !baseUrl.trim()) throw new TypeError('baseUrl is required');
     if (typeof fetchImpl !== 'function') throw new TypeError('fetch implementation is required');
-    this.baseUrl = baseUrl.replace(/\/$/, '');
+    let endpoint;
+    try {
+      endpoint = new URL(baseUrl);
+    } catch {
+      throw new TypeError('baseUrl must be an absolute HTTP(S) URL');
+    }
+    if (!['http:', 'https:'].includes(endpoint.protocol) || !endpoint.hostname
+      || endpoint.username || endpoint.password || endpoint.search || endpoint.hash) {
+      throw new TypeError('baseUrl must be an absolute HTTP(S) URL without credentials, query or fragment');
+    }
+    this.baseUrl = endpoint.toString().replace(/\/+$/, '');
     this.token = token;
     this.fetch = fetchImpl;
   }
@@ -40,7 +50,15 @@ export class ServiceClient {
     }
     const res = await this.fetch(`${this.baseUrl}${path}`, init);
     const text = await res.text();
-    const parsed = text ? JSON.parse(text) : null;
+    let parsed = null;
+    if (text) {
+      try {
+        parsed = JSON.parse(text);
+      } catch (error) {
+        if (res.ok) throw error;
+        parsed = text;
+      }
+    }
     if (!res.ok) throw new ApiError(`Request failed: ${res.status}`, { status: res.status, body: parsed });
     return parsed;
   }

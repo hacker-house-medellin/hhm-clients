@@ -16,17 +16,17 @@ const routes = {
 function atto_literal(name) {
   const match = source.match(new RegExp('pub\\s+fnc\\s+' + name + '\\(\\):\\s*string\\s*\\{\\s*return\\s+"([^"\\n]+)";\\s*\\}', 'g'));
   assert.equal(match?.length, 1, 'missing or duplicate typed Atto function: ' + name);
-  return /return\\s+"([^"]+)";/.exec(match[0])[1];
+  return /return\s+"([^"]+)";/.exec(match[0])[1];
 }
 
 test('Atto functions have one typed descriptor for each API operation', () => {
-  const declared = [...source.matchAll(/pub\\s+fnc\\s+(\\w+)\\(\\):\\s*string/g)].map(x => x[1]).sort();
+  const declared = [...source.matchAll(/pub\s+fnc\s+(\w+)\(\):\s*string/g)].map(x => x[1]).sort();
   const expected = Object.keys(routes).flatMap(name => [name + '_path', name + '_method']).sort();
   assert.deepEqual(declared, expected);
   for (const [name, route] of Object.entries(routes)) {
     assert.equal(atto_literal(name + '_path'), route.path);
     assert.equal(atto_literal(name + '_method'), route.method);
-    assert.match(route.path, /^\\/(?!\\/)[a-z/]+$/);
+    assert.match(route.path, /^\/(?!\/)[a-z\/]+$/);
   }
 });
 

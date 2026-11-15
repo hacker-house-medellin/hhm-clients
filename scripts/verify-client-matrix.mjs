@@ -34,6 +34,7 @@ for (const dependency of ["hacker-house-medellin/hhm-interfaces", "hacker-house-
 
 const canonicalTargets = new Map([
   ["repository", "."],
+  ["atto", "clients/atto"],
   ["c", "clients/c"],
   ["cpp", "clients/cpp"],
   ["zig", "clients/zig"],

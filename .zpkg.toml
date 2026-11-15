@@ -102,3 +102,8 @@ adapter = "java"
 [targets.swift]
 dir = "clients/swift"
 adapter = "none"
+
+# AttoLang path/method descriptors; guest HTTP transport is not claimed.
+[targets.atto]
+dir = "clients/atto"
+adapter = "none"

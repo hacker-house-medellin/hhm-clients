@@ -15,6 +15,7 @@ Each language is also exposed as a Zed target from the root `.zpkg.toml`. A `.zp
 
 | Ecosystem | Path | Package metadata |
 |---|---|---|
+| AttoLang | `clients/atto` | `.atto` functions and `README.md` |
 | Gleam | `clients/gleam` | `gleam.toml` |
 | Erlang | `clients/erlang` | `rebar.config` |
 | Elixir | `clients/elixir` | `mix.exs` |
@@ -44,3 +45,7 @@ The SDK methods align with the shared edge contract: `health`, `getConfig`, `emi
 ```
 
 `test.sh` runs every locally available toolchain and reports explicit skips for unavailable ecosystems. CI can install the full matrix without changing the repository contract.
+
+### AttoLang contract surface
+
+`clients/atto/src/hhm_client.atto` provides the six canonical route and HTTP-method descriptors using AttoLang snake_case functions. These pure descriptors intentionally do **not** claim an HTTP transport or cross-backend executable compiler support. Inject a host transport only after validating it against `hhm-interfaces`; see `clients/atto/README.md`. Node regression tests compare each descriptor to the working JavaScript SDK without network access.

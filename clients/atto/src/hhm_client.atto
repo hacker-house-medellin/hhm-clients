@@ -1,0 +1,51 @@
+// Hacker House Medellín / AttoLang: transport-neutral route descriptors.
+// Wire JSON and authentication are owned by the caller's injected transport.
+// Validation: tests/atto-client.test.mjs checks parity; guest execution is NOT claimed.
+
+pub fnc health_path(): string {
+    return "/healthz";
+}
+
+pub fnc health_method(): string {
+    return "GET";
+}
+
+pub fnc ready_path(): string {
+    return "/readyz";
+}
+
+pub fnc ready_method(): string {
+    return "GET";
+}
+
+pub fnc config_path(): string {
+    return "/api/config";
+}
+
+pub fnc config_method(): string {
+    return "GET";
+}
+
+pub fnc emit_event_path(): string {
+    return "/api/events";
+}
+
+pub fnc emit_event_method(): string {
+    return "POST";
+}
+
+pub fnc create_lead_path(): string {
+    return "/api/leads";
+}
+
+pub fnc create_lead_method(): string {
+    return "POST";
+}
+
+pub fnc create_alert_path(): string {
+    return "/api/alerts";
+}
+
+pub fnc create_alert_method(): string {
+    return "POST";
+}

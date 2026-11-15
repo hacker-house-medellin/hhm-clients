@@ -3,6 +3,7 @@ interfaces_package = "hhm-interfaces"
 shared_library_package = "hhm-lib"
 
 [targets]
+atto = true
 gleamlang = true
 erlang = true
 elixir = true

@@ -17,3 +17,7 @@ targets for Gleam, Erlang, Elixir, Dart, Rust, Java, Go, Python 3, Ruby, PHP, an
 TypeScript for Node.js, Deno, Bun, and edge runtimes. Kotlin and Swift are not advertised until this family has a mobile surface.
 
 Run `python3 scripts/validate-client-matrix.py` before publishing.
+
+## AttoLang
+
+`clients/atto/src/hhm_client.atto` exposes pure, typed path and method descriptors for the six edge operations. It is a source-level interoperability lane, not a claimed runnable network client; the existing language-neutral transport injection contract remains the target. The repository's Node tests validate parity with the reference client, and compiler/runtime conformance must be reported separately.

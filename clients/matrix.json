@@ -1,5 +1,9 @@
 {
   "languages": {
+    "atto": {
+      "dir": "clients/atto",
+      "sentinel": "src/hhm_client.atto"
+    },
     "c": {
       "dir": "clients/c",
       "sentinel": "CMakeLists.txt"
